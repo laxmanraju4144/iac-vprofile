@@ -10,8 +10,3 @@ variable "clusterName" {
   default     = "vprofile-eks"
 }
 
-##test change 
-## tests manullu 
-## hsjeh
-########################
-# line add
