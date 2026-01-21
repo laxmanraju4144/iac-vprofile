@@ -6,13 +6,13 @@ on:
       - main           # Trigger workflow on push to 'main'
       - stage          # Trigger workflow on push to 'stage'
     paths:
-      - iac-vprofile/terraform/**   # Only run if files under this path change
+      - terraform/**   # Only run if files under this path change
   pull_request:
     branches:
       - main           # Trigger workflow on PRs targeting 'main'
       - stage          # Trigger workflow on PRs targeting 'stage'
     paths:
-      - iac-vprofile/terraform**   # Only run if files under this path change
+      - terraform/**   # Only run if files under this path change
 
 env:
  # Environment variables used in the workflow
