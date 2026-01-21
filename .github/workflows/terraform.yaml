@@ -3,13 +3,13 @@ name: "vprofile IAC"   # Name of the workflow
 on:
   push:
     branches:
-      - main           # Trigger workflow on push to 'main'
+     # - main           # Trigger workflow on push to 'main'
       - stage          # Trigger workflow on push to 'stage'
     paths:
       - iac-vprofile/terraform/**   # Only run if files under this path change
   pull_request:
     branches:
-      - main           # Trigger workflow on PRs targeting 'main'
+     # - main           # Trigger workflow on PRs targeting 'main'
       - stage          # Trigger workflow on PRs targeting 'stage'
     paths:
       - iac-vprofile/terraform/**   # Only run if files under this path change
