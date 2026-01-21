@@ -43,7 +43,7 @@ jobs:
      - name: Terraform init
        id: init
        run: |
-         terraform init \
+         working-directory: iac-vprofile/terraform \
            -backend-config="bucket=${BUCKET_TF_STATE}" \
            -backend-config="region=${AWS_REGION}" \
            -backend-config="key=vprofile/terraform.tfstate"
