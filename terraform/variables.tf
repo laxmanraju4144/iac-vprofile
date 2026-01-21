@@ -10,6 +10,12 @@ variable "clusterName" {
   default     = "vprofile-eks"
 }
 
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+  default     = "vprofile-eks"
+}
 
 ##test change 
 ## tests manullu 
+## hsjeh
