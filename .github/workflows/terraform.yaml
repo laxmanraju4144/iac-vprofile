@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "vprofile IAC"   # Name of the workflow
+on:
+  push:
+    branches:
+      - main           # Trigger workflow on push to 'main'
+      - stage          # Trigger workflow on push to 'stage'
+    paths:
+      - iac-vprofile/terraform/**   # Only run if files under this path change
+  pull_request:
+    branches:
+      - main           # Trigger workflow on PRs targeting 'main'
+      - stage          # Trigger workflow on PRs targeting 'stage'
+    paths:
+      - iac-vprofile/terraform/**   # Only run if files under this path change
+
+env:
+ # Environment variables used in the workflow
+ AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}       # AWS access key stored in GitHub secrets
+ AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # AWS secret key stored in GitHub secrets
+ BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE }}           # S3 bucket for Terraform state file
+ AWS_REGION:  us-east-1                                    # AWS region
+ EKS_CLUSTER: vprofile-cluster                             # EKS cluster name
+
+jobs:
+  terraform:
+    name: "Terraform Apply"   # Job name
+    runs-on: ubuntu-latest    # Run on latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash           # Use bash shell
+        working-directory: iac-vprofile/terraform   # Set working directory for all steps
+
+    steps:
+     - name: Checkout source code
+       uses: actions/checkout@v4   # Checkout repository code
+
+     - name: Setup Terraform
+       uses: hashicorp/setup-terraform@v2   # Install Terraform CLI
+       #with:      
+       #  terraform_version: 1.7.5          # (Optional) specify version if needed
+
+     - name: Terraform Init
+       id: init
+       run: |
+         terraform init \
+           -backend-config="bucket=${BUCKET_TF_STATE}" \
+           -backend-config="region=${AWS_REGION}" \
+           -backend-config="key=vprofile/terraform.tfstate"
+
+     - name: Terraform format
+       id: fmt
+       run: terraform fmt -check   # Check if Terraform files are properly formatted
+
+     - name: Terraform Validate
+       id: validate
+       run: terraform validate     # Validate Terraform configuration
+
+     - name: Terraform Plan
+       id: plan
+       run: terraform plan -out=planfile -input=false   # Generate execution plan
+       continue-on-error: true   # Allow workflow to continue even if plan fails
+
+     - name: Terraform plan status
+       if: steps.plan.outcome == 'failure'   # Check if plan step failed
+       run: exit 1   # Exit with error code to fail the workflow
