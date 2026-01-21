@@ -37,8 +37,8 @@ jobs:
 
      - name: Setup Terraform
        uses: hashicorp/setup-terraform@v2   # Install Terraform CLI
-       #with:      
-       #  terraform_version: 1.7.5          # (Optional) specify version if needed
+       with:      
+        terraform_version: 1.7.5          # (Optional) specify version if needed
 
      - name: Terraform Init
        id: init
