@@ -54,8 +54,11 @@ jobs:
       - name: Export Terraform Outputs
         id: tf_outputs
         run: |
-          echo "EKS_CLUSTER=$(terraform output -raw cluster_name)" >> $GITHUB_ENV
-          echo "AWS_REGION=$(terraform output -raw region)" >> $GITHUB_ENV
+          CLUSTER_NAME=$(terraform output -raw cluster_name | tr -d '\n')
+          REGION=$(terraform output -raw region | tr -d '\n')
+          echo "EKS_CLUSTER=$CLUSTER_NAME" >> $GITHUB_ENV
+          echo "AWS_REGION=$REGION" >> $GITHUB_ENV
+
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
